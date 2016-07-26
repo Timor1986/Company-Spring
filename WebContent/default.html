@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+	<script>
+		function clearClientTextBoxes() {
+			$("input[name='clientTextBox']").val('');
+		}
+		
+		function fillClientTextBoxesOnSelcted(selectedItemIndex) {
+    		var identityNumber = $("#tblClients tr:eq(" + selectedItemIndex +") td:eq(1)").text();
+    		var firstNameTextbox = $("#tblClients tr:eq(" + selectedItemIndex +") td:eq(2)").text();
+    		var lastNameTextbox = $("#tblClients tr:eq(" + selectedItemIndex +") td:eq(3)").text();
+    		var addressTextbox = $("#tblClients tr:eq(" + selectedItemIndex +") td:eq(4)").text();
+    		var phoneNumberTextbox = $("#tblClients tr:eq(" + selectedItemIndex +") td:eq(5)").text();
+    		
+    		$('#identityNumberTextbox').val(identityNumber);
+    		$('#firstNameTextbox').val(firstNameTextbox);
+    		$('#lastNameTextbox').val(lastNameTextbox);
+    		$('#addressTextbox').val(addressTextbox);
+    		$('#phoneNumberTextbox').val(phoneNumberTextbox);
+		}
+	
+		$(document).ready(function(){
+		    
+		    //List Clients
+		    $("#listClients").click(function(event) {
+		    	var buttonID = event.target.id;
+		    	
+		        $.get('ClientsServlet', {"button-id": buttonID}, function(result) {
+		        	$("#tblClients tr").not(':first').not(':last').remove();
+		        	var table = '';
+		        	$.each(result, function(i) {
+		        		//$("div").append(result[i].firstName + " ");
+		        		table += '<tr><td>' + "<input type='radio' name='radioClients' value='" + i + "'>" +
+		        				 '</td><td>' + result[i].identityNumber +
+		        				 '</td><td>' + result[i].firstName +
+		        				 '</td><td>' + result[i].lastName +
+		        				 '</td><td>' + result[i].address +
+		        				 '</td><td>' + result[i].phoneNumber + '</td></tr>';
+		        	});
+		        	$("#tblClients tr:first").after(table);
+		        })
+		        $("#editClient").removeAttr("disabled");
+		        $("#removeClient").removeAttr("disabled");
+		        $("#cleanSelectedClient").removeAttr("disabled");
+		        clearClientTextBoxes();
+		        $('input[name=radioClients]:checked').prop('checked',false);
+		    });
+		    
+		    //Add Client
+		    $("#addClient").click(function(event) {
+		    	var buttonID = event.target.id;
+		    	
+		    	$.post('ClientsServlet',
+		    	{
+		    		"button-id": buttonID,
+		    		"identityNumber": $('#identityNumberTextbox').val(),
+		    		"firstName": $('#firstNameTextbox').val(),
+		    		"lastName": $('#lastNameTextbox').val(),
+		    		"address": $('#addressTextbox').val(),
+		    		"phoneNumber": $('#phoneNumberTextbox').val()
+		    	},
+		    	function(result) {
+		    	});
+		    	
+		    	$("#listClients").click();
+		    });
+		    
+		    //Remove Client
+		    $("#removeClient").click(function(event) {
+		    	var buttonID = event.target.id;
+		    	var index;
+		    	var identityNumber;
+		    	
+		    	index = Number($('input[name=radioClients]:checked').val()) + 1;
+		    	identityNumber = $("#tblClients tr:eq(" + index +") td:eq(1)").text();
+		    	$.get('ClientsServlet', {"button-id": buttonID, "identityNumber": identityNumber}, function(result) {
+		    		alert("Removed Identity Number: " + identityNumber);
+		    	});
+		    	
+		    	 $("#listClients").click();
+		    });		
+		    
+		    //Edit Client
+		    $("#editClient").click(function(event) {
+		    	var index = Number($('input[name=radioClients]:checked').val()) + 1;
+		    	var buttonID = event.target.id;
+		    	identityNumber = $("#tblClients tr:eq(" + index +") td:eq(1)").text();
+		    	
+		    	$.post('ClientsServlet', 
+		    	{
+		    		"button-id": buttonID,
+		    		"identityNumber": $('#identityNumberTextbox').val(),
+		    		"firstName": $('#firstNameTextbox').val(),
+		    		"lastName": $('#lastNameTextbox').val(),
+		    		"address": $('#addressTextbox').val(),
+		    		"phoneNumber": $('#phoneNumberTextbox').val()		    		
+		    	},
+		    	function(result) {
+		    		alert("Edited Identity Number: " + identityNumber);
+		    	});
+		    	
+		    	 $("#listClients").click();
+		    });	
+		    
+		    //Clean Selected Client
+		    $("#cleanSelectedClient").click(function() {
+		    	clearClientTextBoxes();
+		    	$('input[name=radioClients]:checked').prop('checked',false);
+		    });
+		    
+		    //Selecting Client Event
+		    $('#tblClients').on('click', 'input[name=radioClients]',function() {
+		    	var index = Number($('input[name=radioClients]:checked').val()) + 1;
+		    	fillClientTextBoxesOnSelcted(index);
+		    });
+		});
+	</script>	
+	<style>
+		table, th, td {
+		    border: 1px solid black;
+		    border-collapse: collapse;
+		}	
+	</style>	
+</head>
+<body>
+	Clients
+	<table id="tblClients">
+		<tr>
+			<td><b>Selected</b></td>
+			<td><b>Identity Number</b></td>
+			<td><b>First Name</b></td>
+			<td><b>Last Name</b></td>
+			<td><b>Address</b></td>
+			<td><b>Phone</b></td>
+		</tr>
+		<tr>
+			<td>ADD/EDIT</td>
+			<td><input type="text" id="identityNumberTextbox" name="clientTextBox"></td>
+			<td><input type="text" id="firstNameTextbox" name="clientTextBox"></td>
+			<td><input type="text" id="lastNameTextbox" name="clientTextBox"></td>
+			<td><input type="text" id="addressTextbox" name="clientTextBox"></td>
+			<td><input type="text" id="phoneNumberTextbox" name="clientTextBox"></td>
+		</tr>
+	</table><br><br>
+	<button id="listClients">List Clients</button>
+	<button id="addClient">Add Client</button>
+	<button id="removeClient" disabled>Remove Client</button>
+	<button id="editClient" disabled>Edit Client</button>
+	<button id="cleanSelectedClient" disabled>Clean Selected</button><br><br><br>
+	Jobs
+	<table id="jobs">
+		<tr>
+			<td><b>Selected</b></td>
+			<td><b>Job Number</b></td>
+			<td><b>Job Name</b></td>
+			<td><b>Salary</b></td>
+		</tr>
+		<tr>
+			<td>ADD/EDIT</td>
+			<td><input type="text" id="jobNumber" name="clientTextBox"></td>
+			<td><input type="text" id="jobName" name="clientTextBox"></td>
+			<td><input type="text" id="salary" name="clientTextBox"></td>
+		</tr>		
+	</table><br>
+	<button id="listJobs">List Jobs</button>
+	<button id="addJob">Add Jobs</button>
+	<button id="removeJob" disabled>Remove Jobs</button>
+	<button id="editJob" disabled>Edit Jobs</button>
+	<button id="cleanSelectedJob" disabled>Clean Selected</button>
+</body>
+</html>
