@@ -1,5 +1,6 @@
 package com.company.spring.jdbc.model;
 
+//Erez test
 public class Job {
 	private Long id;
 	private String name;
@@ -21,5 +22,5 @@ public class Job {
 	
 	public Long getSalary() {
 		return this.salary;
-	}
+	} 
 }
