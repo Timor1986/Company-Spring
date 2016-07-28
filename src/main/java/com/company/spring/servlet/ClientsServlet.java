@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.company.spring.jdbc.dao.ClientDAO;
@@ -16,10 +17,13 @@ import com.company.spring.jdbc.model.Client;
 
 import com.google.gson.Gson;
 
+
+
 @WebServlet("/ClientsServlet")
 public class ClientsServlet extends HttpServlet {
-	private ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring.xml");
-	private ClientDAO clientDAO = ctx.getBean("clientDAO",ClientDAO.class);	
+	@Autowired
+	private ClientDAO clientDAO;
+	
 	private static final long serialVersionUID = 1L;
        
     public ClientsServlet() {

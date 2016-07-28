@@ -8,19 +8,16 @@ import javax.sql.DataSource;
 
 import com.company.spring.jdbc.model.Job;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class JobDAOImpl implements JobDAO {
-	private DataSource dataSource;
-	
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-	}
+	@Autowired
+	JdbcTemplate jdbcTemplate;
 	
 	@Override
 	public List<Job> getAll() {
 		String query = "SELECT * FROM jobs";
-		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		List<Job> jobList = new ArrayList<Job>();
 		
 		List<Map<String,Object>> jobRows = jdbcTemplate.queryForList(query);
@@ -42,7 +39,6 @@ public class JobDAOImpl implements JobDAO {
 				job.getId(),
 				job.getName(),
 				job.getSalary());
-		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		jdbcTemplate.execute(query);
 	}
 
@@ -59,14 +55,12 @@ public class JobDAOImpl implements JobDAO {
 				job.getName(),
 				job.getSalary()
 				);
-		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		jdbcTemplate.execute(query);
 	}
 
 	@Override
 	public void deleteById(Long id) {
 		String query = "Delete FROM jobs WHERE id ='" + id + "'";
-		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		jdbcTemplate.execute(query);
 	}
 }

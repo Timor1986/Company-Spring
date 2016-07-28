@@ -8,20 +8,18 @@ import javax.sql.DataSource;
 
 import com.company.spring.jdbc.model.Client;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 public class ClientDAOImpl implements ClientDAO {
-	private DataSource dataSource;
-	
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-	}
+
+	@Autowired
+	JdbcTemplate jdbcTemplate;
 	
 	@Override
 	public List<Client> getAll() {
 		String query = "SELECT * FROM clients";
-		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		List<Client> clientList = new ArrayList<Client>();
 		
 		List<Map<String,Object>> clientRows = jdbcTemplate.queryForList(query);
@@ -49,7 +47,6 @@ public class ClientDAOImpl implements ClientDAO {
 				client.getAddress(),
 				client.getPhoneNumber()
 				);
-		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		jdbcTemplate.execute(query);
 	}
 
@@ -68,14 +65,12 @@ public class ClientDAOImpl implements ClientDAO {
 				client.getPhoneNumber(),
 				client.getIdentityNumber()
 				);
-		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		jdbcTemplate.execute(query);
 	}
 
 	@Override
 	public void deleteById(Long id) {
 		String query = "Delete FROM clients WHERE identity_number ='" + id + "'";
-		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		jdbcTemplate.execute(query);
 	}
 }
