@@ -1,6 +1,6 @@
 package com.company.spring.jdbc.model;
 
-//Erez test
+//Erez test 
 public class Job {
 	private Long id;
 	private String name;
