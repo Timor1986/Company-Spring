@@ -13,6 +13,7 @@ import com.company.spring.jdbc.dao.ClientDAO;
 import com.company.spring.jdbc.dao.ClientDAOImpl;
 import com.company.spring.jdbc.dao.JobDAO;
 import com.company.spring.jdbc.dao.JobDAOImpl;
+import com.company.spring.servlet.ClientsServlet;
 
 @Configuration
 @Import(DataSourceConfig.class)
@@ -35,4 +36,5 @@ public class RootConfiguration {
 	public JobDAO jobDAO(){
 		return new JobDAOImpl();
 	}
+
 }

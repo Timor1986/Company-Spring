@@ -9,7 +9,7 @@ import com.company.spring.core.RootConfiguration;
 
 public class ApplicationInitializer implements WebApplicationInitializer {
 
-	AnnotationConfigApplicationContext  appContext;
+	static AnnotationConfigApplicationContext  appContext;
 	
     @Override
     public void onStartup(ServletContext container) {
@@ -17,5 +17,9 @@ public class ApplicationInitializer implements WebApplicationInitializer {
     	appContext.register(RootConfiguration.class);
     	appContext.refresh();
     }
+    
+    public static AnnotationConfigApplicationContext getAppContext() {
+		return appContext;
+	}
 
  }

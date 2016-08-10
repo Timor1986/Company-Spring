@@ -10,8 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.company.spring.ApplicationInitializer;
 import com.company.spring.jdbc.dao.ClientDAO;
 import com.company.spring.jdbc.model.Client;
 
@@ -21,15 +24,11 @@ import com.google.gson.Gson;
 
 @WebServlet("/ClientsServlet")
 public class ClientsServlet extends HttpServlet {
-	@Autowired
-	private ClientDAO clientDAO;
+	
+	public ClientDAO clientDAO  = ApplicationInitializer.getAppContext().getBean(ClientDAO.class);
 	
 	private static final long serialVersionUID = 1L;
        
-    public ClientsServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
 		String buttonId = request.getParameter("button-id");
